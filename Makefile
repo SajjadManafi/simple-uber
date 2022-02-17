@@ -7,4 +7,17 @@ createdb:
 dropdb:
 	sudo docker exec -it postgres-SU dropdb simple_uber
 
-.PHONY: postgres createdb dropdb
+migrateup:
+	migrate -path migrations -database "postgresql://root:password@localhost:5432/simple_uber?sslmode=disable" -verbose up
+
+migrateup1:
+	migrate -path migrations -database "postgresql://root:password@localhost:5432/simple_uber?sslmode=disable" -verbose up 1
+
+migratedown:
+	migrate -path migrations -database "postgresql://root:password@localhost:5432/simple_uber?sslmode=disable" -verbose down
+
+migratedown1:
+	migrate -path migrations -database "postgresql://root:password@localhost:5432/simple_uber?sslmode=disable" -verbose down 1
+
+
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1
