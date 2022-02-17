@@ -1,0 +1,6 @@
+ALTER TABLE IF EXISTS "drivers" DROP CONSTRAINT IF EXISTS "drivers_current_cab_id_fkey";
+DROP TABLE IF EXISTS "trips";
+DROP TABLE IF EXISTS "cabs";
+DROP TABLE IF EXISTS "drivers";
+DROP TABLE IF EXISTS "users";
+DROP TYPE IF EXISTS "gender";
