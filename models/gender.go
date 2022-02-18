@@ -7,7 +7,7 @@ type Gender string
 
 const (
 	Male   Gender = "male"
-	Female Gender = "femail"
+	Female Gender = "female"
 )
 
 func (e *Gender) Scan(gender interface{}) error {
