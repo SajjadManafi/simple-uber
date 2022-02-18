@@ -16,3 +16,6 @@
 
 help.txt
 .vscode
+# sqlc files
+db
+sqlc.yaml
