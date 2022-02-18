@@ -22,4 +22,7 @@ migratedown1:
 gotestcover:
 	go test ./... -coverprofile=cover.out && go tool cover -html=cover.out
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 gotestcover
+test:
+	go test -v -cover ./...
+
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 gotestcover test
