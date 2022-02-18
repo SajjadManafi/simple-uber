@@ -41,7 +41,7 @@ CREATE TABLE "trips" (
   "origin" varchar NOT NULL,
   "destination" varchar NOT NULL,
   "rider_id" int NOT NULL,
-  "driver_id" int,
+  "driver_id" int NOT NULL,
   "start_time" timestamptz NOT NULL DEFAULT (now()),
   "end_time" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "status" int NOT NULL DEFAULT 1,
