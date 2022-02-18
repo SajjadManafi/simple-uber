@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/SajjadManafi/simple-uber/models"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -32,7 +34,14 @@ func RandomUsername() string {
 	return RandomString(6)
 }
 
-// // RandomEmail generates a random email
+// RandomEmail generates a random email
 func RandomEmail() string {
 	return fmt.Sprintf("%s@email.com", RandomString(6))
+}
+
+// RandomGender generates a random gender
+func RandomGender() models.Gender {
+	Genders := []models.Gender{models.Male, models.Female}
+	Gender := Genders[rand.Intn(len(Genders))]
+	return Gender
 }

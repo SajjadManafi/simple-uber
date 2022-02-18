@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/SajjadManafi/simple-uber/models"
 	"github.com/stretchr/testify/require"
 )
 
@@ -52,5 +53,11 @@ func TestRandomEmail(t *testing.T) {
 	r := RandomEmail()
 	b := r[6:] == "@email.com"
 	require.Equal(t, 16, len(r))
+	require.True(t, b)
+}
+
+func TestRandomGender(t *testing.T) {
+	r := RandomGender()
+	b := r == models.Male || r == models.Female
 	require.True(t, b)
 }
