@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/lib/pq"
 )
@@ -11,13 +12,13 @@ type PostgresStore struct {
 }
 
 // NewPostgresStore creates a new PostgresStore
-func NewPostgresStore(dsn string) *PostgresStore {
+func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
 
 	return &PostgresStore{
 		db: db,
-	}
+	}, nil
 }
