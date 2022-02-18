@@ -21,7 +21,7 @@ INSERT INTO users (
 `
 
 // CreateUser creates user in database
-func (q *PostgresStore) CreateUser(ctx context.Context, arg CreateUserParams) (models.User, error) {
+func (q *PostgresStore) CreateUser(ctx context.Context, arg models.CreateUserParams) (models.User, error) {
 	row := q.db.QueryRowContext(ctx, createUserQuery,
 		arg.Username,
 		arg.HashedPassword,
@@ -75,7 +75,7 @@ OFFSET $2
 `
 
 // ListUsers gets users and return slice of users (with limit and offset)
-func (q *PostgresStore) ListUsers(ctx context.Context, arg ListUsersParams) ([]models.User, error) {
+func (q *PostgresStore) ListUsers(ctx context.Context, arg models.ListUsersParams) ([]models.User, error) {
 	rows, err := q.db.QueryContext(ctx, listUsersQuery, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ RETURNING id, username, hashed_password, full_name, gender, balance, email, join
 `
 
 // UpdateUser updated user balance with user id
-func (q *PostgresStore) UpdateUser(ctx context.Context, arg UpdateUserParams) (models.User, error) {
+func (q *PostgresStore) UpdateUser(ctx context.Context, arg models.UpdateUserParams) (models.User, error) {
 	row := q.db.QueryRowContext(ctx, updateUserQuery, arg.ID, arg.Balance)
 	var i models.User
 	err := row.Scan(
@@ -152,7 +152,7 @@ RETURNING id, username, hashed_password, full_name, gender, balance, email, join
 `
 
 // AddUserBalance Increases or decreases user balance
-func (q *PostgresStore) AddUserBalance(ctx context.Context, arg AddUserBalanceParams) (models.User, error) {
+func (q *PostgresStore) AddUserBalance(ctx context.Context, arg models.AddUserBalanceParams) (models.User, error) {
 	row := q.db.QueryRowContext(ctx, addUserBalanceQuery, arg.Amount, arg.ID)
 	var i models.User
 	err := row.Scan(
