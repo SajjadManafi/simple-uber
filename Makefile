@@ -19,5 +19,7 @@ migratedown:
 migratedown1:
 	migrate -path migrations -database "postgresql://root:password@localhost:5432/simple_uber?sslmode=disable" -verbose down 1
 
+gotestcover:
+	go test ./... -coverprofile=cover.out && go tool cover -html=cover.out
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 gotestcover
