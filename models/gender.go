@@ -2,6 +2,7 @@ package models
 
 import "fmt"
 
+// Gender is Enum used in users and drivers gender
 type Gender string
 
 const (
