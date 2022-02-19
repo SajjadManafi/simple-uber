@@ -101,8 +101,33 @@ func TestUpdateDriverBalance(t *testing.T) {
 	require.Equal(t, args.Balance, driver2.Balance)
 }
 
-// TODO
-// func TestUpdateDriverCurrentCab(t *testing.T)
+func TestUpdateDriverCurrentCab(t *testing.T) {
+	// create random driver
+	driver1 := createRandomDriver(t)
+
+	// create random cab
+	cab := createRandomCab(t)
+
+	// update cab driver id
+	cab2, err := TestDB.UpdateCabsDriverId(context.Background(), models.UpdateCabsDriverIdParams{
+		ID:       cab.ID,
+		DriverID: driver1.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, cab2)
+
+	// update driver current cab id
+	driver2, err := TestDB.UpdateDriverCurrentCab(context.Background(), models.UpdateDriverCurrentCabParams{
+		ID:           driver1.ID,
+		CurrentCabID: cab.ID,
+	})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, driver2)
+
+	require.Equal(t, driver1.ID, driver2.ID)
+	require.Equal(t, cab.ID, driver2.CurrentCabID)
+}
 
 func TestAddDriverBalance(t *testing.T) {
 	driver1 := createRandomDriver(t)
