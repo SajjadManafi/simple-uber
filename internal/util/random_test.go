@@ -61,3 +61,18 @@ func TestRandomGender(t *testing.T) {
 	b := r == models.Male || r == models.Female
 	require.True(t, b)
 }
+
+func TestRandomCabBrand(t *testing.T) {
+	require.NotEmpty(t, RandomCabBrand())
+}
+func TestRandomCabModel(t *testing.T) {
+	require.NotEmpty(t, RandomCabModel())
+}
+func TestRandomCabColor(t *testing.T) {
+	require.NotEmpty(t, RandomCabColor())
+}
+func TestRandomCabPlate(t *testing.T) {
+	require.NotEmpty(t, RandomCabPlate())
+}
+
+// TODO: add validator for tests

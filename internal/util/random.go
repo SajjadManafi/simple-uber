@@ -45,3 +45,20 @@ func RandomGender() models.Gender {
 	Gender := Genders[rand.Intn(len(Genders))]
 	return Gender
 }
+
+func RandomCabBrand() string {
+	Brands := []string{"Audi", "BMW", "Dodge", "Ford", "Honda", "Mazda", "Maserati", "Mercedes-Benz", "Nissan", "Suzuki", "Tesla", "Toyota"}
+	brand := Brands[rand.Intn(len(Brands))]
+	return brand
+}
+func RandomCabModel() string {
+	return fmt.Sprintf("%s-%d", RandomString(3), RandomInt(1, 9))
+}
+func RandomCabColor() string {
+	Colors := []string{"Black", "Blue", "Brown", "Green", "Grey", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"}
+	color := Colors[rand.Intn(len(Colors))]
+	return color
+}
+func RandomCabPlate() string {
+	return fmt.Sprintf("%d%s%d-%d", RandomInt(10, 99), RandomString(1), RandomInt(100, 999), RandomInt(10, 99))
+}
