@@ -8,7 +8,7 @@ import (
 	"github.com/SajjadManafi/simple-uber/contract"
 )
 
-var TestDB contract.UserStore
+var TestDB contract.Store
 
 func TestMain(m *testing.M) {
 	var err error
