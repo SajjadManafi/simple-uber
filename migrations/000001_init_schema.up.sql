@@ -22,7 +22,7 @@ CREATE TABLE "drivers" (
   "gender" gender NOT NULL,
   "balance" bigint NOT NULL,
   "email" varchar UNIQUE NOT NULL,
-  "current_cab_id" int UNIQUE NOT NULL,
+  "current_cab_id" int NOT NULL,
   "joined_at" timestamptz NOT NULL DEFAULT (now())
 );
 
