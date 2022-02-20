@@ -2,18 +2,21 @@ package api
 
 import (
 	"github.com/SajjadManafi/simple-uber/contract"
+	"github.com/SajjadManafi/simple-uber/internal/config"
 	"github.com/gin-gonic/gin"
 )
 
 // // Server serves HTTP requests for our service.
 type Server struct {
+	Config config.Config
 	store  contract.Store
 	router *gin.Engine
 }
 
-func NewServer(store contract.Store) (*Server, error) {
+func NewServer(config config.Config, store contract.Store) (*Server, error) {
 	server := &Server{
-		store: store,
+		Config: config,
+		store:  store,
 	}
 
 	server.SetupRouter()
@@ -32,8 +35,8 @@ func (server *Server) SetupRouter() {
 }
 
 // Start runs HTTP server on a specific address.
-func (server *Server) Start(addr string) error {
-	return server.router.Run(addr)
+func (server *Server) Start() error {
+	return server.router.Run(server.Config.ServerAddress)
 }
 
 // errorResponse represents a response with an error.

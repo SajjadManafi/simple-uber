@@ -4,26 +4,27 @@ import (
 	"log"
 
 	"github.com/SajjadManafi/simple-uber/api"
+	"github.com/SajjadManafi/simple-uber/internal/config"
 	"github.com/SajjadManafi/simple-uber/internal/store"
 )
 
-const (
-	dbSource      = "postgres://root:password@localhost:5432/simple_uber?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
-)
-
 func main() {
-	store, err := store.NewPostgresStore(dbSource)
+	config, err := config.LoadConfig(".")
+	if err != nil {
+		log.Fatalln("cannot load config:", err)
+	}
+
+	store, err := store.NewPostgresStore(config)
 	if err != nil {
 		log.Fatalln("cannot connect to db:", err)
 	}
 
-	server, err := api.NewServer(store)
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatalln("cannot create server:", err)
 	}
 
-	err = server.Start(serverAddress)
+	err = server.Start()
 	if err != nil {
 		log.Fatalln("cannot start server:", err)
 	}

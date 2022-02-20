@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/SajjadManafi/simple-uber/internal/config"
 	_ "github.com/lib/pq"
 )
 
@@ -12,8 +13,8 @@ type PostgresStore struct {
 }
 
 // NewPostgresStore creates a new PostgresStore
-func NewPostgresStore(dsn string) (*PostgresStore, error) {
-	db, err := sql.Open("postgres", dsn)
+func NewPostgresStore(config config.Config) (*PostgresStore, error) {
+	db, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}

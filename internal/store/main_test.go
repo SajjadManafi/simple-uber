@@ -6,13 +6,19 @@ import (
 	"testing"
 
 	"github.com/SajjadManafi/simple-uber/contract"
+	"github.com/SajjadManafi/simple-uber/internal/config"
 )
 
 var TestDB contract.Store
 
 func TestMain(m *testing.M) {
-	var err error
-	TestDB, err = NewPostgresStore("postgres://root:password@localhost:5432/simple_uber?sslmode=disable")
+
+	config, err := config.LoadConfig("../..")
+	if err != nil {
+		log.Fatalln("cannot load config:", err)
+	}
+
+	TestDB, err = NewPostgresStore(config)
 	if err != nil {
 		log.Fatalln("cannot connect to db:", err)
 	}
