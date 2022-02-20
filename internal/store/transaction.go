@@ -52,7 +52,7 @@ func (q *PostgresStore) TripDoneTx(ctx context.Context, arg models.TripDoneTrans
 		var err error
 
 		TUarg := models.UpdateTripDoneParams{
-			ID:           arg.ID,
+			ID:           arg.Trip.ID,
 			DriverRating: arg.DriverRating,
 		}
 		result.Trip, err = q.UpdateTripDone(ctx, TUarg)
