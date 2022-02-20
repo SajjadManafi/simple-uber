@@ -44,13 +44,14 @@ type AddUserBalanceParams struct {
 
 // CreateUserRequest used in get request for creating user
 type CreateUserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	FullName string `json:"full_name"`
-	Gender   Gender `json:"gender"`
-	Email    string `json:"email"`
+	Username string `json:"username" binding:"required,alphanum"`
+	Password string `json:"password" binding:"required,min=6"`
+	FullName string `json:"full_name" binding:"required"`
+	Gender   Gender `json:"gender" binding:"required,oneof=male female"`
+	Email    string `json:"email" binding:"required,email"`
 }
 
+// CreateUserResponse is Response to user creation used in api
 type CreateUserResponse struct {
 	Username string    `json:"username"`
 	FullName string    `json:"full_name"`
@@ -58,4 +59,17 @@ type CreateUserResponse struct {
 	Balance  int64     `json:"balance"`
 	Email    string    `json:"email"`
 	JoinedAt time.Time `json:"joined_at"`
+}
+
+// GetUserRequest used in get request for getting user
+type GetUserRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
+type AddUserBalanceRequest struct {
+	Amount int64 `json:"amount" binding:"required,min=1"`
+}
+
+type DeleteUserRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
 }

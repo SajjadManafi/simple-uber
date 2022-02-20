@@ -30,6 +30,9 @@ func (server *Server) SetupRouter() {
 	router := gin.Default()
 
 	router.POST("/api/users", server.createUser)
+	router.GET("/api/users/:id", server.getUser)
+	router.PATCH("/api/users/:id/balance", server.addUserBalance)
+	router.DELETE("/api/users/:id", server.deleteUser)
 
 	server.router = router
 }
