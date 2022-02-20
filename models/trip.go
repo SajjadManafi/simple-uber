@@ -53,3 +53,19 @@ type UpdateTripStatusParams struct {
 	ID     int32 `json:"id"`
 	Status int32 `json:"status"`
 }
+
+// TripDoneTransactionParams contains the input parameters of the TripDoneTx function.
+type TripDoneTransactionParams struct {
+	ID           int32 `json:"id"`
+	DriverID     int32 `json:"driver_id"`
+	RiderID      int32 `json:"rider_id"`
+	Amount       int64 `json:"amount"`
+	DriverRating int32 `json:"driver_rating"`
+}
+
+// TripDoneTransactionResult contains the result of the TripDoneTx function.
+type TripDoneTransactionResult struct {
+	Trip   Trip   `json:"trip"`
+	User   User   `json:"user"`
+	Driver Driver `json:"driver"`
+}
