@@ -25,4 +25,7 @@ gotestcover:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 gotestcover test
+server:
+	go run main.go
+
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 gotestcover test server

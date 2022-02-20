@@ -41,3 +41,21 @@ type AddUserBalanceParams struct {
 	Amount int64 `json:"amount"`
 	ID     int32 `json:"id"`
 }
+
+// CreateUserRequest used in get request for creating user
+type CreateUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	FullName string `json:"full_name"`
+	Gender   Gender `json:"gender"`
+	Email    string `json:"email"`
+}
+
+type CreateUserResponse struct {
+	Username string    `json:"username"`
+	FullName string    `json:"full_name"`
+	Gender   Gender    `json:"gender"`
+	Balance  int64     `json:"balance"`
+	Email    string    `json:"email"`
+	JoinedAt time.Time `json:"joined_at"`
+}
