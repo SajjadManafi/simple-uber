@@ -44,6 +44,9 @@ func (server *Server) SetupRouter() {
 	// cabs
 	router.POST("/api/cabs", server.createCab)
 
+	// trips
+	router.GET("/api/trips", server.createTrip)
+
 	server.router = router
 }
 
