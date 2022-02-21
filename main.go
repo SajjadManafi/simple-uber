@@ -24,6 +24,8 @@ func main() {
 		log.Fatalln("cannot create server:", err)
 	}
 
+	go server.ListenToWsChannel()
+
 	err = server.Start()
 	if err != nil {
 		log.Fatalln("cannot start server:", err)
