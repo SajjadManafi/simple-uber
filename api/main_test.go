@@ -4,9 +4,11 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/SajjadManafi/simple-uber/internal/config"
 	"github.com/SajjadManafi/simple-uber/internal/store"
+	"github.com/SajjadManafi/simple-uber/internal/util"
 )
 
 var TestServer *Server
@@ -16,6 +18,9 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalln("cannot load config:", err)
 	}
+
+	config.AccessTokenDuration = time.Minute
+	config.TokenSymmetricKey = util.RandomString(32)
 
 	store, err := store.NewPostgresStore(config)
 	if err != nil {

@@ -1,22 +1,32 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/SajjadManafi/simple-uber/contract"
 	"github.com/SajjadManafi/simple-uber/internal/config"
+	"github.com/SajjadManafi/simple-uber/internal/token"
 	"github.com/gin-gonic/gin"
 )
 
 // // Server serves HTTP requests for our service.
 type Server struct {
-	Config config.Config
-	store  contract.Store
-	router *gin.Engine
+	Config     config.Config
+	store      contract.Store
+	router     *gin.Engine
+	tokenMaker token.Maker
 }
 
 func NewServer(config config.Config, store contract.Store) (*Server, error) {
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	// tokenMaker, err := token.NewJWTMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("could not create token maker: %w", err)
+	}
 	server := &Server{
-		Config: config,
-		store:  store,
+		Config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
 	}
 
 	server.SetupRouter()

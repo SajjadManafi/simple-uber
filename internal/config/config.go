@@ -1,14 +1,20 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 // Config is a struct that holds all the configuration for the application.
 // the values are read by viper from a config file or environment variables.
 type Config struct {
-	DBDriver      string `mapstructure:"DB_DRIVE"`
-	DBSource      string `mapstructure:"DB_SOURCE"`
-	ServerAddress string `mapstructure:"SERVER_ADDRESS"`
-	TESTMODE      bool   `mapstructure:"TEST_MODE"`
+	DBDriver            string        `mapstructure:"DB_DRIVE"`
+	DBSource            string        `mapstructure:"DB_SOURCE"`
+	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
+	TESTMODE            bool          `mapstructure:"TEST_MODE"`
+	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOEKEN_DURATION"`
 }
 
 // LoadConfig loads the configuration from a config file or environment variables.
