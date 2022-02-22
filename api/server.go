@@ -57,6 +57,9 @@ func (server *Server) SetupRouter() {
 	// trips
 	router.GET("/api/trips", server.createTrip)
 
+	//login
+	router.POST("/api/login", server.login)
+
 	server.router = router
 }
 
