@@ -9,6 +9,7 @@ import (
 type DriverStore interface {
 	CreateDriver(ctx context.Context, arg models.CreateDriverParams) (models.Driver, error)
 	GetDriver(ctx context.Context, id int32) (models.Driver, error)
+	GetDriverByUsername(ctx context.Context, username string) (models.Driver, error)
 	ListDrivers(ctx context.Context, arg models.ListDriversParams) ([]models.Driver, error)
 	UpdateDriverBalance(ctx context.Context, arg models.UpdateDriverBalanceParams) (models.Driver, error)
 	UpdateDriverCurrentCab(ctx context.Context, arg models.UpdateDriverCurrentCabParams) (models.Driver, error)

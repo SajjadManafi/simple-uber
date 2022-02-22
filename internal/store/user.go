@@ -66,6 +66,29 @@ func (q *PostgresStore) GetUser(ctx context.Context, id int32) (models.User, err
 	return i, err
 }
 
+// getUserByUsernameQuery is query for get user by username
+const getUserByUsernameQuery = `
+SELECT id, username, hashed_password, full_name, gender, balance, email, joined_at FROM users
+WHERE username = $1 LIMIT 1
+`
+
+// GetUserByUsername gets user from database by username
+func (q *PostgresStore) GetUserByUsername(ctx context.Context, username string) (models.User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsernameQuery, username)
+	var i models.User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Gender,
+		&i.Balance,
+		&i.Email,
+		&i.JoinedAt,
+	)
+	return i, err
+}
+
 // listUsersQuery is query for list users
 const listUsersQuery = `
 SELECT id, username, hashed_password, full_name, gender, balance, email, joined_at FROM users

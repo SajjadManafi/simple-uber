@@ -69,6 +69,30 @@ func (q *PostgresStore) GetDriver(ctx context.Context, id int32) (models.Driver,
 	return i, err
 }
 
+// getDriverByUsernameQuery is query for get driver by username
+const getDriverByUsernameQuery = `
+SELECT id, username, hashed_password, full_name, gender, balance, email, current_cab_id, joined_at FROM drivers
+WHERE username = $1 LIMIT 1
+`
+
+// GetDriverByUsername gets user from database by username
+func (q *PostgresStore) GetDriverByUsername(ctx context.Context, username string) (models.Driver, error) {
+	row := q.db.QueryRowContext(ctx, getDriverByUsernameQuery, username)
+	var i models.Driver
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Gender,
+		&i.Balance,
+		&i.Email,
+		&i.CurrentCabID,
+		&i.JoinedAt,
+	)
+	return i, err
+}
+
 // listDriversQuery is query for get list of drivers from database
 const listDriversQuery = `
 SELECT id, username, hashed_password, full_name, gender, balance, email, current_cab_id, joined_at FROM drivers
