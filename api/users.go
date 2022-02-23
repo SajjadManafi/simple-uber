@@ -2,9 +2,11 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/SajjadManafi/simple-uber/internal/token"
 	"github.com/SajjadManafi/simple-uber/internal/util"
 	"github.com/SajjadManafi/simple-uber/models"
 	"github.com/gin-gonic/gin"
@@ -76,6 +78,14 @@ func (server *Server) getUser(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if user.Username != authPayload.Username {
+		err := errors.New("account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+
+	}
+
 	ctx.JSON(http.StatusOK, user)
 
 }
@@ -120,7 +130,7 @@ func (server *Server) deleteUser(ctx *gin.Context) {
 		return
 	}
 
-	_, err := server.store.GetUser(ctx, req.ID)
+	user, err := server.store.GetUser(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
@@ -128,6 +138,14 @@ func (server *Server) deleteUser(ctx *gin.Context) {
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if user.Username != authPayload.Username {
+		err := errors.New("account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+
 	}
 
 	err = server.store.DeleteUser(ctx, req.ID)

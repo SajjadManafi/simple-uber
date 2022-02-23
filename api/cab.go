@@ -1,8 +1,10 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 
+	"github.com/SajjadManafi/simple-uber/internal/token"
 	"github.com/SajjadManafi/simple-uber/models"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -15,8 +17,19 @@ func (server *Server) createCab(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	driver, err := server.store.GetDriverByUsername(ctx, authPayload.Username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	arg := models.CreateCabParams{
-		DriverID: req.DriverID,
+		DriverID: driver.ID,
 		Brand:    req.Brand,
 		Model:    req.Model,
 		Color:    req.Color,

@@ -37,9 +37,8 @@ type UpdateCabsDriverIdParams struct {
 
 // CreateRequest used in get request for creating cab for driver
 type CreateRequest struct {
-	DriverID int32  `json:"driver_id" binding:"required,min=1"`
-	Brand    string `json:"brand" binding:"required,alphanum"`
-	Model    string `json:"model" binding:"required,alphanum"`
-	Color    string `json:"color" binding:"required"`
-	Plate    string `json:"plate" binding:"required"`
+	Brand string `json:"brand" binding:"required,alphanum"`
+	Model string `json:"model" binding:"required,alphanum"`
+	Color string `json:"color" binding:"required"`
+	Plate string `json:"plate" binding:"required"`
 }

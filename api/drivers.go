@@ -2,9 +2,11 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
+	"github.com/SajjadManafi/simple-uber/internal/token"
 	"github.com/SajjadManafi/simple-uber/internal/util"
 	"github.com/SajjadManafi/simple-uber/models"
 	"github.com/gin-gonic/gin"
@@ -77,6 +79,14 @@ func (server *Server) getDriver(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if driver.Username != authPayload.Username {
+		err := errors.New("account doesn't belong to the authenticated driver")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+
+	}
+
 	ctx.JSON(http.StatusOK, driver)
 }
 
@@ -96,6 +106,14 @@ func (server *Server) driverWithdraw(ctx *gin.Context) {
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if driver.Username != authPayload.Username {
+		err := errors.New("account doesn't belong to the authenticated driver")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+
 	}
 
 	if driver.Balance == 0 {
@@ -128,12 +146,23 @@ func (server *Server) setCab(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	driver, err := server.store.GetDriverByUsername(ctx, authPayload.Username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	arg := models.UpdateDriverCurrentCabParams{
-		ID:           req.DriverID,
+		ID:           driver.ID,
 		CurrentCabID: req.CabID,
 	}
 
-	driver, err := server.store.UpdateDriverCurrentCab(ctx, arg)
+	driver, err = server.store.UpdateDriverCurrentCab(ctx, arg)
 	if pqErr, ok := err.(*pq.Error); ok {
 		switch pqErr.Code.Name() {
 		case "unique_violation", "foreign_key_violation":

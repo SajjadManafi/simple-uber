@@ -87,6 +87,5 @@ type DriverBalanceWithdrawResponse struct {
 
 // SetCabRequest used in get request for setting cab for driver
 type SetCabRequest struct {
-	DriverID int32 `json:"driver_id" binding:"required,min=1"`
-	CabID    int32 `json:"cab_id" binding:"required,min=1"`
+	CabID int32 `json:"cab_id" binding:"required,min=1"`
 }

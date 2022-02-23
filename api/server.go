@@ -39,23 +39,25 @@ func (server *Server) SetupRouter() {
 
 	router := gin.Default()
 
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
 	// users
 	router.POST("/api/users", server.createUser)
-	router.GET("/api/users/:id", server.getUser)
+	authRoutes.GET("/api/users/:id", server.getUser)
 	router.PATCH("/api/users/:id/balance", server.addUserBalance)
-	router.DELETE("/api/users/:id", server.deleteUser)
+	authRoutes.DELETE("/api/users/:id", server.deleteUser)
 
 	// drivers
 	router.POST("/api/drivers", server.createDriver)
-	router.GET("/api/drivers/:id", server.getDriver)
-	router.PATCH("/api/drivers/withdraw", server.driverWithdraw)
-	router.PATCH("/api/drivers/setcab", server.setCab)
+	authRoutes.GET("/api/drivers/:id", server.getDriver)
+	authRoutes.PATCH("/api/drivers/withdraw", server.driverWithdraw)
+	authRoutes.PATCH("/api/drivers/setcab", server.setCab)
 
 	// cabs
-	router.POST("/api/cabs", server.createCab)
+	authRoutes.POST("/api/cabs", server.createCab)
 
 	// trips
-	router.GET("/api/trips", server.createTrip)
+	authRoutes.GET("/api/trips", server.createTrip)
 
 	//login
 	router.POST("/api/login", server.login)
