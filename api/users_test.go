@@ -10,8 +10,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/SajjadManafi/simple-uber/contract"
+	"github.com/SajjadManafi/simple-uber/internal/token"
 	"github.com/SajjadManafi/simple-uber/internal/util"
 	"github.com/SajjadManafi/simple-uber/models"
 	"github.com/gin-gonic/gin"
@@ -24,6 +26,7 @@ func TestCreateUser(t *testing.T) {
 	testCases := []struct {
 		name          string
 		body          gin.H
+		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 		checkResponse func(recorder *httptest.ResponseRecorder)
 	}{
 		{
@@ -34,6 +37,9 @@ func TestCreateUser(t *testing.T) {
 				"full_name": user.FullName,
 				"gender":    user.Gender,
 				"email":     user.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, "rider", time.Minute)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
@@ -48,6 +54,9 @@ func TestCreateUser(t *testing.T) {
 				"full_name": user.FullName,
 				"gender":    user.Gender,
 				"email":     user.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "InvalidUser#1", "rider", time.Minute)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -67,6 +76,8 @@ func TestCreateUser(t *testing.T) {
 			request, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(data))
 			require.NoError(t, err)
 
+			tc.setupAuth(t, request, TestServer.tokenMaker)
+
 			TestServer.router.ServeHTTP(recorder, request)
 			tc.checkResponse(recorder)
 
@@ -81,6 +92,7 @@ func TestGetUser(t *testing.T) {
 	testCases := []struct {
 		name          string
 		setupStore    func(store contract.Store)
+		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 		checkResponse func(recorder *httptest.ResponseRecorder)
 	}{
 		{
@@ -97,6 +109,9 @@ func TestGetUser(t *testing.T) {
 				require.NoError(t, err)
 				ID = user.ID
 			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, "rider", time.Minute)
+			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 				requireBodyMatchUserGet(t, recorder.Body, user)
@@ -108,6 +123,9 @@ func TestGetUser(t *testing.T) {
 				err := store.DeleteUser(context.Background(), ID)
 				require.NoError(t, err)
 			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, "rider", time.Minute)
+			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusNotFound, recorder.Code)
 			},
@@ -117,6 +135,9 @@ func TestGetUser(t *testing.T) {
 			setupStore: func(store contract.Store) {
 				ID = 0
 			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, "rider", time.Minute)
+			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
@@ -125,15 +146,20 @@ func TestGetUser(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			store := TestServer.store
+			server := NewTestServer(t, store)
+
 			recorder := httptest.NewRecorder()
 
-			tc.setupStore(TestServer.store)
+			tc.setupStore(server.store)
 
 			url := fmt.Sprintf("/api/users/%d", ID)
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
 
-			TestServer.router.ServeHTTP(recorder, request)
+			tc.setupAuth(t, request, server.tokenMaker)
+
+			server.router.ServeHTTP(recorder, request)
 			log.Println(recorder.Body)
 			tc.checkResponse(recorder)
 		})
