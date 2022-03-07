@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	wsstore "github.com/SajjadManafi/simple-uber/internal/wsStore"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
@@ -95,6 +96,20 @@ func (server *Server) ListenToWsChannel() {
 
 	for {
 		e := <-wsChan
+		switch e.Action {
+		case "setLocation":
+			cordiante := wsstore.Cordinate{
+				X: 44.04,
+				Y: 25.0780,
+			}
+
+			server.driverWSS.Insert(wsstore.Driver{
+				ID:         e.ID,
+				Cordinate:  cordiante,
+				Connection: e.Conn.Conn,
+			})
+			fmt.Println(server.driverWSS.Get(e.ID))
+		}
 		response.Action = "Got here"
 		response.Message = fmt.Sprintf("Some message, and action was %s", e.Action)
 		server.broadcast(&e.Conn, response)

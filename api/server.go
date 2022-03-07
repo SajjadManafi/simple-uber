@@ -6,6 +6,7 @@ import (
 	"github.com/SajjadManafi/simple-uber/contract"
 	"github.com/SajjadManafi/simple-uber/internal/config"
 	"github.com/SajjadManafi/simple-uber/internal/token"
+	wsstore "github.com/SajjadManafi/simple-uber/internal/wsStore"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,7 @@ type Server struct {
 	store      contract.Store
 	router     *gin.Engine
 	tokenMaker token.Maker
+	driverWSS  *wsstore.MapGrid
 }
 
 func NewServer(config config.Config, store contract.Store) (*Server, error) {
@@ -27,6 +29,7 @@ func NewServer(config config.Config, store contract.Store) (*Server, error) {
 		Config:     config,
 		store:      store,
 		tokenMaker: tokenMaker,
+		driverWSS:  wsstore.NewMapGrid(),
 	}
 
 	server.SetupRouter()
